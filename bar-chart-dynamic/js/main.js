@@ -27,6 +27,7 @@ const leftAxisLabel = chartGroup.append("text")
   .attr("transform", `rotate(-90)`)
   .text("Revenue");
 
+  // range defined statically, domain can be defined separately in update function
   const yScale = d3.scaleLinear().range([chartHeight, 0]);
   const xScale = d3.scaleBand().range([0, chartWidth]).paddingOuter(0.2).paddingInner(0.3);
 
@@ -43,6 +44,7 @@ d3.json("../data/revenues.json").then(data => {
   })
 });
 
+// update function only contains logic related to changes in domain
 function update(data, dataType = "revenue") {
   yScale.domain([0, d3.max(data, d => Number(d[dataType]))]);
   xScale.domain(data.map(d => d.month));
@@ -93,6 +95,7 @@ function update(data, dataType = "revenue") {
   // everything above merge, will apply to new elements in enter()
   // everything after the merge is applied to enter() and groups() selections
   .merge(virtualSelectors)
+  // every attribute placed after transition will be subject to transition
     .transition(transition)
       .attr("x", d => xScale(d.month))
       .attr("y", d => Number(yScale(d[dataType])))
