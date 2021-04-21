@@ -1,5 +1,7 @@
 const margin = {left: 100, top: 10, right: 10, bottom: 100 };
 
+const continents = ["europe", "asia", "americas", "africa"];
+
 const canvasWidth = 800;
 const canvasHeight = 500;
 
@@ -35,7 +37,7 @@ chartGroup.append("text")
 const scaleX = d3.scaleLog().base(10).domain([142, 150000]).range([0, chartWidth]);
 const scaleY = d3.scaleLinear().domain([0, 90]).range([chartHeight, 0]);
 // with oridinal scale you only need to provide range values, and domain at runtime will be assigned to elements from range
-const circleColorScale = d3.scaleOrdinal(d3.schemeCategory10);
+const circleColorScale = d3.scaleOrdinal(d3.schemeCategory10).domain(continents);
 // for bubble chart set size of the circle, not the radius
 const circleSizeScale = d3.scaleLinear().domain([2000, 1400000000]).range([getCircleSize(minRadius), getCircleSize(maxRadius)]);
 
@@ -46,6 +48,18 @@ chartGroup.append("g").attr("transform", `translate(0, ${chartHeight})`).call(xA
 
 const yAxis = d3.axisLeft(scaleY);
 chartGroup.append("g").call(yAxis);
+
+const legend = chartGroup.append("g").attr("transform", `translate(${chartWidth - 30}, ${250})`);
+
+continents.forEach((continent, i) => {
+	const row = legend.append("g").attr("transform", `translate(0, ${i * 20})`);
+
+	row.append("rect").attr("height", 10).attr("width", 10).attr("fill", circleColorScale(continent))
+
+	row.append("text").attr("x", -10).attr("y", 10).attr("text-anchor", "end").style("text-transform", "capitalize").text(continent)
+
+})
+
 
 d3.json("data/data.json").then(function(data){
 	const formattedData = data.map(item => {
