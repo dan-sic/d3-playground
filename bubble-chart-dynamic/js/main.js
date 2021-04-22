@@ -8,8 +8,10 @@ const canvasHeight = 500;
 const chartWidth = canvasWidth - margin.left - margin.right;
 const chartHeight = canvasHeight - margin.top - margin.bottom;
 
-const minRadius = 3;
-const maxRadius = 40;
+const minRadius = 5;
+const maxRadius = 50;
+
+const continentSelect = document.querySelector("#continent-select");
 
 const canvas = d3.select("#chart-area").append("svg").attr("width", canvasWidth).attr("height", canvasHeight);
 const chartGroup = canvas.append("g").attr("transform", `translate(${margin.left}, ${margin.top})`);
@@ -60,6 +62,7 @@ continents.forEach((continent, i) => {
 
 })
 
+d3.select("body").append("div").attr("id", "tooltip").attr("style", "position: absolute; display: none");
 
 d3.json("data/data.json").then(function(data){
 	const formattedData = data.map(item => {
@@ -70,31 +73,77 @@ d3.json("data/data.json").then(function(data){
 	const dataLength = formattedData.length;
 	let dataIndex = 0;
 
-	d3.interval(() => {
-		dataIndex++;
-
+	function updateCallback() {
+		
 		if (dataIndex >= dataLength) {
 			dataIndex = 0;
 		}
-
+		
 		update(formattedData[dataIndex])
+		dataIndex++;
+	}
 
-	}, 100)
+	let intervalRef = d3.interval(updateCallback, 100)
 
-	update(formattedData[dataIndex])
+	document.querySelector("#pause-btn").addEventListener("click", (e) => {
+
+		if (e.target.textContent === "Pause") {
+			intervalRef.stop();
+			e.target.textContent = "Play"
+
+		} else {
+			intervalRef = d3.interval(updateCallback, 100)
+			e.target.textContent = "Pause"
+		}
+	})
+
+	document.querySelector("#reset-btn").addEventListener("click", () => {
+		dataIndex = 0;
+
+		if (document.querySelector("#pause-btn").textContent === "Play") {
+			update(formattedData[dataIndex])
+		}
+	})
+
+	continentSelect.addEventListener("change", () => {
+		update(formattedData[dataIndex])
+	})
+
+	const dataIndexScale = d3.scaleOrdinal().domain(Array(215).fill(1800).map((x, y) => x + y)).range(Array(215).fill(0).map((x, y) => x + y))
+
+	$("#date-slider").slider({
+		max: 2014,
+		min: 1800,
+		step: 1,
+		slide: (event, ui) => {
+			dataIndex = dataIndexScale(ui.value);
+			update(formattedData[dataIndex])
+		}
+	})
 });
 
 function update(data) {
+
+	const selectedContinent = continentSelect.value;
+
+	const filteredCountries = data.countries.filter(c => {
+		if (selectedContinent === "all") return true;
+
+		return c.continent === selectedContinent;
+	})
 	
 	// second argument to data()  > function that returns key, that is common for objects in different arrays (sort of like id)
 	// necessary to avoid wierd bugs
-	const virtualSelectors = chartGroup.selectAll("circle").data(data.countries, c => c.country);
+	const virtualSelectors = chartGroup.selectAll("circle").data(filteredCountries, c => c.country);
 	
 	virtualSelectors.exit().remove();
 
 	virtualSelectors.enter()
 	.append("circle")
 	.attr("fill", c => circleColorScale(c.continent))
+	.on("mouseover", onMouseover)
+	.on("mouseout", onMouseout)
+	.on("mousemove", onMousemove)
 	.merge(virtualSelectors)
 		.transition().duration(100)
 			.attr("r", c => getCircleRadius(circleSizeScale(c.population)))
@@ -103,6 +152,9 @@ function update(data) {
 
 
 	yearLabel.text(data.year);
+
+	document.querySelector("#slider-year-label").textContent = data.year;
+	$("#date-slider").slider("value", data.year)
 }
 
 function getCircleSize(radius) {	
@@ -111,4 +163,27 @@ function getCircleSize(radius) {
 
 function getCircleRadius(circumference) {
 	return circumference / (2 * Math.PI);
+}
+
+function onMouseover(data) {
+	d3.select("#tooltip").style("left", d3.event.pageX + "px").style("top", d3.event.pageY + "px");
+	d3.select("#tooltip").style("display", "block").html(
+		`
+			<ul>
+				<li>Country: ${data.country}</li>
+				<li>Continent: ${data.continent}</li>
+				<li>Income: ${d3.format("$,.0f")(data.income)}</li>
+				<li>Life expectancy: ${d3.format(".2f")(data.life_exp)}</li>
+				<li>Population: ${d3.format(",.0f")(data.population)}</li>
+			</ul>
+		`
+	);
+}
+
+function onMouseout() {
+	d3.select("#tooltip").style("display", "none");
+}
+
+function onMousemove() {
+	d3.select("#tooltip").style("left", d3.event.pageX + "px").style("top", d3.event.pageY + "px");
 }
