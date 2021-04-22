@@ -6,3 +6,7 @@
 
 ![image](https://user-images.githubusercontent.com/47970765/115564546-d5d32980-a2b8-11eb-8557-22a28d6567c7.png)
 
+# Bubble chart dynamic ( + interactive)
+
+![image](https://user-images.githubusercontent.com/47970765/115693203-015d1f00-a360-11eb-87df-bfcb1dd1d853.png)
+
