@@ -13,3 +13,7 @@
 # Line chart dynamic ( + interactive)
 
 ![image](https://user-images.githubusercontent.com/47970765/115881885-7efe5900-a44c-11eb-8d08-f1774a4756ad.png)
+
+# Area chart
+
+![image](https://user-images.githubusercontent.com/47970765/115930835-6ad94c80-a48a-11eb-8b5b-2fab59a4c937.png)
