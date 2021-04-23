@@ -10,3 +10,6 @@
 
 ![image](https://user-images.githubusercontent.com/47970765/115693203-015d1f00-a360-11eb-87df-bfcb1dd1d853.png)
 
+# Line chart dynamic ( + interactive)
+
+![image](https://user-images.githubusercontent.com/47970765/115881885-7efe5900-a44c-11eb-8d08-f1774a4756ad.png)
