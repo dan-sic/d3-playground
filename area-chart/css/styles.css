@@ -1,0 +1,14 @@
+.overlay {
+  fill: none;
+  pointer-events: all;
+}
+
+.select-line {
+  stroke: #777;
+  stroke-width: 2px;
+  stroke-dasharray: 3, 3;
+}
+
+.select-range {
+  fill: red;
+}
