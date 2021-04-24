@@ -24,7 +24,8 @@ chartGroup.append("text")
   .attr("transform", `rotate(-90)`)
   .text("Revenue");
 
-d3.json("../data/revenues.json").then(data => {
+d3.json("data/revenues.json").then(data => {
+  console.log(data)
 
   const yScale = d3.scaleLinear().domain([d3.max(data, d => d.revenue), 0]).range([0, chartHeight]);
   const xScale = d3.scaleBand().domain(data.map(d => d.month)).range([0, chartWidth]).paddingOuter(0.2).paddingInner(0.3);

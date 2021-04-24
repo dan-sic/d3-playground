@@ -34,7 +34,7 @@ const leftAxisLabel = chartGroup.append("text")
   const xAxisGroup = chartGroup.append("g").attr("transform", `translate(0, ${chartHeight})`);
   const yAxisGroup = chartGroup.append("g");
 
-d3.json("../data/revenues.json").then(data => {
+d3.json("data/revenues.json").then(data => {
 
   update(data);
 
