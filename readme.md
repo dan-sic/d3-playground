@@ -17,3 +17,8 @@
 # Area chart
 
 ![image](https://user-images.githubusercontent.com/47970765/115930835-6ad94c80-a48a-11eb-8b5b-2fab59a4c937.png)
+
+# Map
+
+![image](https://user-images.githubusercontent.com/47970765/116749479-4b4da100-aa01-11eb-8f27-34bb1fca2a04.png)
+
